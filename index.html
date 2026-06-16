@@ -73,8 +73,8 @@ var bmCode = [
   'function ss(nm,vl){var el=dc.querySelector("select[name=\\""+nm+"\\"]");if(el){el.value=vl;el.dispatchEvent(new Event("change",{bubbles:true}))}}',
   'for(var i=0;i<rows.length;i++){var r=rows[i],n=r.n;',
   'sv("ItemDesc"+n,r.title);sv("Quantity"+n,"1");sv("ClaimAmount"+n,r.amt);sv("itemComments"+n,r.cmt);',
-  'sv("L"+n+"N1E1",r.acct);sv("L"+n+"N1E2",r.cc);sv("L"+n+"N1E3",r.proj);',
-  'ss("L"+n+"Ref1",r.co2u);sv("L"+n+"Ref2",r.co2v);sv("L"+n+"Ref3",r.fp);ss("L"+n+"Ref4",r.tr)}',
+  'sv("L"+n+"N1E2",r.cc);',
+  'ss("L"+n+"Ref1",r.co2u);sv("L"+n+"Ref2",r.co2v)}',
   'o.remove();alert("Done! "+rows.length+" lines filled.")}catch(e){alert(e.message)}};',
   'br2.appendChild(cb);br2.appendChild(gb);bx.appendChild(h);bx.appendChild(sub);bx.appendChild(ta);bx.appendChild(br2);o.appendChild(bx);document.body.appendChild(o)',
   '})()'
@@ -83,6 +83,20 @@ var bmEl = document.getElementById('bmLink');
 bmEl.href = bmCode;
 bmEl.onclick = function(e) { e.preventDefault(); alert('請將此按鈕「拖曳」到書籤列！不是點擊。'); };
 </script>
+
+<!-- Settings -->
+<div class="section">
+  <h2 style="cursor:pointer;user-select:none;" onclick="document.getElementById('settingsBody').style.display=document.getElementById('settingsBody').style.display==='none'?'':'none'; this.querySelector('.arrow').textContent=document.getElementById('settingsBody').style.display==='none'?'▶':'▼'">
+    <span class="arrow">▶</span> Proactis 欄位設定
+  </h2>
+  <div id="settingsBody" style="display:none; margin-top:10px;">
+    <p class="help" style="margin-bottom:10px;">此值會填入 Proactis 每一行的 CostCentre 欄位。其他欄位（Account、Project、Fund Permit）使用 Proactis 預設值，不另外指派。</p>
+    <div style="display:flex; align-items:center; gap:12px; font-size:13px;">
+      <label for="cfgCC" style="font-weight:bold;">CostCentre</label>
+      <input id="cfgCC" type="text" value="300022530" style="padding:4px 8px; border:1px solid #ccc; border-radius:4px; font-family:monospace; width:180px;" onchange="FIXED.cc=this.value">
+    </div>
+  </div>
+</div>
 
 <!-- Step 1: Paste -->
 <div class="section">
@@ -143,8 +157,7 @@ const CO2_UNIT_MAP = {
 };
 const CO2_DEFAULT = '77a24fc4-494e-41f2-9253-6a41cb011b1a';
 const FIXED = {
-  acct: '512', cc: '300022530', proj: '949999', fp: 'Z',
-  tr: '7c71479c-4637-4d58-9522-a8691a4ba9fb',
+  cc: '300022530',
 };
 
 let parsedRows = [];
@@ -230,9 +243,8 @@ function buildFillDataForPage(pageIndex) {
     return {
       n: n,
       title: r.title, amt: r.amount, cmt: r.comments,
-      acct: FIXED.acct, cc: FIXED.cc, proj: FIXED.proj,
+      cc: FIXED.cc,
       co2u: co2u, co2v: r.co2Value,
-      fp: FIXED.fp, tr: FIXED.tr,
     };
   });
 }
